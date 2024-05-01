@@ -4,7 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import authRouter from "./routes/authRouter.js";
-const { DB_HOST } = process.env;
+const { DB_HOST, PORT } = process.env;
 const app = express();
 
 app.use(morgan("tiny"));
@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 mongoose
   .connect(DB_HOST)
   .then(() => {
-    app.listen(3000, () => {
+    app.listen(PORT, () => {
       console.log("Server is running. Use our API on port: 3000");
     });
   })
