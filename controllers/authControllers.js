@@ -14,6 +14,7 @@ import {
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
+import cloudinary from "../helpers/cloudinary.js";
 
 const { JWT_SECRET } = process.env;
 const register = async (req, res) => {
@@ -80,36 +81,34 @@ const logout = async (req, res) => {
   res.status(204).json({});
 };
 
-// const avatarsDir = path.resolve("public", "avatars");
-// const changeAva = async (req, res) => {
-//   if (!req.file) throw HttpError(400, "Not found");
+const changeAva = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload } = req.file;
 
-//   const { _id } = req.user;
-//   const { path: tempUpload, originalname } = req.file;
+  try {
+    const image = await Jimp.read(tempUpload);
+    await image.cover(250, 250);
+    await image.writeAsync(tempUpload);
+  } catch (error) {
+    throw HttpError(500, "Internal Server Error");
+  }
 
-//   try {
-//     const image = await Jimp.read(tempUpload);
-//     await image.resize(250, 250);
-//     await image.writeAsync(tempUpload);
-//   } catch (error) {
-//     throw HttpError(500, "Internal Server Error");
-//   }
+  const { url: avatarURL } = await cloudinary.uploader.upload(req.file.path, {
+    folder: "avatars",
+  });
 
-//   const filename = `${_id}_${originalname}`;
-//   const resultUpload = path.join(avatarsDir, filename);
-//   await fs.rename(tempUpload, resultUpload);
-//   const avatarURL = path.join("avatars", filename);
-//   await User.findByIdAndUpdate(_id, { avatarURL });
+  await fs.unlink(req.file.path);
 
-//   res.json({
-//     avatarURL,
-//   });
-// };
+  await User.findByIdAndUpdate(_id, { avatarURL });
+  res.json({
+    avatarURL,
+  });
+};
 
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
-  // changeAva: ctrlWrapper(changeAva),
+  changeAva: ctrlWrapper(changeAva),
 };
