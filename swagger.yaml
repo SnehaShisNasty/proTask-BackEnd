@@ -1,0 +1,113 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "Task Pro API"
+  description: "API for managing tasks and todo lists"
+servers:
+  - url: https://protask-backend-qjoh.onrender.com
+    description: Production server
+  - url: http://localhost:3000
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: "All methods about authentication"
+
+paths:
+  /users/register:
+    post:
+      summary: Creates a user.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegister"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+        "409":
+          description: Conflict. Email alreasy in use
+  /users/login:
+    post:
+      summary: Login a user.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzJhNzE2YmU3MDdlMmFmNjBjMzA2MyIsImlhdCI6MTcxNDU5NTYzMiwiZXhwIjoxNzE0Njc4NDMyfQ.gV4vdobUN8-qyLEQzK45BbTY75It4NEWVyzW1YZii1s
+                  message:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "test@gmail.com"
+                      email:
+                        type: string
+                        example: "Password1"
+
+        "400":
+          description: Bad request
+        "401":
+          description: Email or password invalid
+  /users/logout:
+    post:
+      summary: "Logout a user"
+      description: "Endpoint to log out a user."
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Success
+        "401":
+          description: Authorization header not found
+components:
+  schemas:
+    UserRegister:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "name"
+        email:
+          type: string
+          format: email
+          example: "test@gmail.com"
+        password:
+          type: string
+          example: "Password1"
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "test@gmail.com"
+        password:
+          type: string
+          example: "Password1"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
