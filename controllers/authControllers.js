@@ -72,7 +72,7 @@ const editTheme = async (req, res) => {
   const { id } = req.user;
   const { theme } = req.body;
   await updateUserService({ _id: id }, { theme });
-  res.status(201).json({ message: "success" });
+  res.status(201).json({ message: "Success" });
 };
 
 const logout = async (req, res) => {
