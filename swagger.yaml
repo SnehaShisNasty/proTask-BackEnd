@@ -131,7 +131,7 @@ components:
     UserTheme:
       type: object
       properties:
-        email:
+        theme:
           type: string
           enum: ["light", "dark", "violet"]
           example: "light"
