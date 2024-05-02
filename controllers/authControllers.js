@@ -15,6 +15,7 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import cloudinary from "../helpers/cloudinary.js";
+import { request } from "http";
 
 const { JWT_SECRET } = process.env;
 const register = async (req, res) => {
@@ -67,12 +68,11 @@ const login = async (req, res) => {
     },
   });
 };
-const current = async (req, res) => {
-  const { email, subscription } = req.user;
-  res.json({
-    email,
-    subscription,
-  });
+const editTheme = async (req, res) => {
+  const { id } = req.user;
+  const { theme } = req.body;
+  await updateUserService({ _id: id }, { theme });
+  res.status(201).json({ message: "success" });
 };
 
 const logout = async (req, res) => {
@@ -108,7 +108,7 @@ const changeAva = async (req, res) => {
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
-  current: ctrlWrapper(current),
+  editTheme: ctrlWrapper(editTheme),
   logout: ctrlWrapper(logout),
   changeAva: ctrlWrapper(changeAva),
 };

@@ -3,6 +3,7 @@ import authControllers from "../controllers/authControllers.js";
 import {
   userRegisterSchema,
   userLoginSchema,
+  userEditThemeSchema,
 } from "../schemas/usersSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -17,7 +18,12 @@ authRouter.post(
 );
 authRouter.post("/login", validateBody(userLoginSchema), authControllers.login);
 
-authRouter.get("/current", authenticate, authControllers.current);
+authRouter.post(
+  "/edit/theme",
+  authenticate,
+  validateBody(userEditThemeSchema),
+  authControllers.editTheme
+);
 
 authRouter.post("/logout", authenticate, authControllers.logout);
 

@@ -14,3 +14,6 @@ export const userLoginSchema = Joi.object({
   email: Joi.string().pattern(emailRegepxp).required(),
   password: Joi.string().pattern(passwordRegex).required(),
 });
+export const userEditThemeSchema = Joi.object({
+  theme: Joi.string().valid("light", "dark", "violet").required(),
+});

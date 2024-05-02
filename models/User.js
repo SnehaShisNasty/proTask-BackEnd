@@ -16,6 +16,11 @@ const userSchema = new Schema(
       required: [true, "Password is required"],
     },
     avatarURL: String,
+    theme: {
+      type: String,
+      default: "light",
+      enum: ["light", "dark", "violet"],
+    },
     token: {
       type: String,
       default: null,
