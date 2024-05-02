@@ -83,6 +83,8 @@ paths:
           description: Success
         "401":
           description: Authorization header not found
+        "403":
+          description: Forbidden
   /users/edit/theme:
     post:
       summary: Edit your personal theme
@@ -103,6 +105,8 @@ paths:
           description: Invalid data
         "401":
           description: Authorization header not found
+        "403":
+          description: Forbidden
 components:
   schemas:
     UserRegister:
