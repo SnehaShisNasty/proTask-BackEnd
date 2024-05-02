@@ -4,8 +4,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import authRouter from "./routes/authRouter.js";
+
 import boardRouter from "./routes/boardRouter.js";
 const { DB_HOST } = process.env;
+
 const app = express();
 
 app.use(morgan("tiny"));
@@ -25,13 +27,14 @@ app.use((err, req, res, next) => {
 	res.status(status).json({ message });
 });
 mongoose
-	.connect(DB_HOST)
-	.then(() => {
-		app.listen(3000, () => {
-			console.log("Server is running. Use our API on port: 3000");
-		});
-	})
-	.catch((error) => {
-		console.error(error);
-		process.exit(1);
-	});
+  .connect(DB_HOST)
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log("Server is running. Use our API on port: 3000");
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+
