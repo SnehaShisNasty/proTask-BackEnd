@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   version: "1.0.0"
-  title: "Task Pro API"
+  title: "Task Pro Doc API"
   description: "API for managing tasks and todo lists"
 servers:
   - url: https://protask-backend-qjoh.onrender.com
@@ -12,11 +12,13 @@ servers:
 tags:
   - name: Authentication
     description: "All methods about authentication"
+  - name: Edit
+    description: "All methods about Edit"
 
 paths:
   /users/register:
     post:
-      summary: Creates a user.
+      summary: Creates a user
       tags:
         - Authentication
       requestBody:
@@ -81,6 +83,26 @@ paths:
           description: Success
         "401":
           description: Authorization header not found
+  /users/edit/theme:
+    post:
+      summary: Edit your personal theme
+      tags:
+        - Edit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserTheme"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Invalid data
+        "401":
+          description: Authorization header not found
 components:
   schemas:
     UserRegister:
@@ -106,6 +128,14 @@ components:
         password:
           type: string
           example: "Password1"
+    UserTheme:
+      type: object
+      properties:
+        email:
+          type: string
+          enum: ["light", "dark", "violet"]
+          example: "light"
+
   securitySchemes:
     bearerAuth:
       type: http
