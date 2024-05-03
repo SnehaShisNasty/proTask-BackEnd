@@ -105,10 +105,45 @@ const changeAva = async (req, res) => {
   });
 };
 
+const editProfile = async (req, res) => {
+  const { id } = req.user;
+  const { name, email, password } = req.body;
+
+  const user = await User.findById(id);
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  if (password) {
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) {
+      throw HttpError(401, "Incorrect current password");
+    }
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      name,
+      email,
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json({
+    message: "Profile updated successfully",
+    user: {
+      name: updatedUser.name,
+      email: updatedUser.email,
+    },
+  });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   editTheme: ctrlWrapper(editTheme),
   logout: ctrlWrapper(logout),
   changeAva: ctrlWrapper(changeAva),
+  editProfile: ctrlWrapper(editProfile),
 };

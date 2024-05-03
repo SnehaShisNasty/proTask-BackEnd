@@ -4,6 +4,7 @@ import {
   userRegisterSchema,
   userLoginSchema,
   userEditThemeSchema,
+  userProfileEditSchema,
 } from "../schemas/usersSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -32,6 +33,13 @@ authRouter.patch(
   upload.single("avatar"),
   authenticate,
   authControllers.changeAva
+);
+
+authRouter.put(
+  "/profile",
+  authenticate,
+  validateBody(userProfileEditSchema),
+  authControllers.editProfile
 );
 
 export default authRouter;
