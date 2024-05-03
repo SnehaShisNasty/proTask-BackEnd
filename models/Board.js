@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import { setUpdateSetting, handleSaveError } from "./hooks.js";
 
-const boardsShema = new Schema(
+const boardsSchema = new Schema(
 	{
 		title: {
 			type: String,
@@ -19,13 +19,14 @@ const boardsShema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "user",
 		},
+		columns: [{ type: Schema.Types.ObjectId, ref: "column" }],
 	},
 	{ versionKey: false, timestamps: true }
 );
 
-boardsShema.post("save", handleSaveError);
-boardsShema.pre("findOneAndUpdate", setUpdateSetting);
+boardsSchema.post("save", handleSaveError);
+boardsSchema.pre("findOneAndUpdate", setUpdateSetting);
 
-const Board = model("board", boardsShema);
+const Board = model("board", boardsSchema);
 
 export default Board;

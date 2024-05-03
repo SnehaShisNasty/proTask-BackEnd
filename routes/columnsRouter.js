@@ -1,34 +1,39 @@
 import express from "express";
-import boardControllers from "../controllers/boardControllers.js";
+import columnsControllers from "../controllers/columnControllers.js";
 
 import validateBody from "../decorators/validateBody.js";
 import {
-	createBoardSchema,
-	editBoardSchema,
-} from "../schemas/boardsSchemas.js";
+	createColumnSchema,
+	editColumnSchema,
+} from "../schemas/columnsSchemas.js";
 
 import isValidId from "../middlewares/isValidId.js";
+import { isValidColumnId } from "../middlewares/isValidId.js";
 import authenticate from "../middlewares/authenticate.js";
 
 const columnRouter = express.Router();
 
 columnRouter.use(authenticate);
 
-columnRouter.get("/", boardControllers.getAllBoards);
+columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
 
 columnRouter.post(
-	"/create-column",
-	validateBody(createBoardSchema),
-	boardControllers.createBoard
+	"/:boardId",
+	validateBody(createColumnSchema),
+	columnsControllers.createColumn
 );
 
 columnRouter.put(
-	"/:id",
-	isValidId,
-	validateBody(editBoardSchema),
-	boardControllers.editBoard
+	"/:boardId/:columnId",
+	isValidColumnId,
+	validateBody(editColumnSchema),
+	columnsControllers.editcolumn
 );
 
-columnRouter.delete("/:id", isValidId, boardControllers.deleteBoard);
+columnRouter.delete(
+	"/:boardId/:columnId",
+	isValidColumnId,
+	columnsControllers.deleteColumn
+);
 
 export default columnRouter;
