@@ -97,27 +97,57 @@ const logout = async (req, res) => {
   res.status(204).json({});
 };
 
-const changeAva = async (req, res) => {
-  const { _id } = req.user;
-  const { path: tempUpload } = req.file;
+const editProfile = async (req, res) => {
+  const { id } = req.user;
+  const { name, email, password } = req.body;
 
-  try {
-    const image = await Jimp.read(tempUpload);
-    await image.cover(250, 250);
-    await image.writeAsync(tempUpload);
-  } catch (error) {
-    throw HttpError(500, "Internal Server Error");
+  const user = await User.findById(id);
+  let avatarURL = user.avatarURL;
+
+  if (!user) {
+    throw HttpError(404, "User not found");
   }
 
-  const { url: avatarURL } = await cloudinary.uploader.upload(req.file.path, {
-    folder: "avatars",
-  });
+  if (password) {
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) {
+      throw HttpError(401, "Incorrect current password");
+    }
+  }
 
-  await fs.unlink(req.file.path);
+  try {
+    const tempUpload = req.file?.path;
+    if (tempUpload) {
+      const image = await Jimp.read(tempUpload);
+      await image.cover(250, 250);
+      await image.writeAsync(tempUpload);
+      ({ url: avatarURL } = await cloudinary.uploader.upload(tempUpload, {
+        folder: "avatars",
+      }));
 
-  await User.findByIdAndUpdate(_id, { avatarURL });
-  res.json({
-    avatarURL,
+      await fs.unlink(tempUpload);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      name,
+      email,
+      avatarURL,
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json({
+    message: "Profile updated successfully",
+    user: {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      avatarURL,
+    },
   });
 };
 
@@ -128,4 +158,5 @@ export default {
   logout: ctrlWrapper(logout),
   changeAva: ctrlWrapper(changeAva),
   needHelp: ctrlWrapper(needHelp),
+  editProfile: ctrlWrapper(editProfile),
 };

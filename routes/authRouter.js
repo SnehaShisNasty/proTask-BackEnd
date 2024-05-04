@@ -5,6 +5,7 @@ import {
   userLoginSchema,
   userEditThemeSchema,
   userNeedHelpSchema,
+  userProfileEditSchema,
 } from "../schemas/usersSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -29,10 +30,11 @@ authRouter.post(
 authRouter.post("/logout", authenticate, authControllers.logout);
 
 authRouter.patch(
-  "/avatars",
-  upload.single("avatar"),
+  "/profile",
   authenticate,
-  authControllers.changeAva
+  upload.single("avatar"),
+  validateBody(userProfileEditSchema),
+  authControllers.editProfile
 );
 authRouter.post(
   "/need-help",
