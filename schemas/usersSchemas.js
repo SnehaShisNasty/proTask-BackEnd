@@ -20,7 +20,7 @@ export const userEditThemeSchema = Joi.object({
 
 export const userNeedHelpSchema = Joi.object({
   description: Joi.string().required(),
-
+)};
 export const userProfileEditSchema = Joi.object({
   name: Joi.string().pattern(nameRegex),
   email: Joi.string().pattern(emailRegexp),
