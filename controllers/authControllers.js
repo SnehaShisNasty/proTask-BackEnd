@@ -81,35 +81,13 @@ const logout = async (req, res) => {
   res.status(204).json({});
 };
 
-const changeAva = async (req, res) => {
-  const { _id } = req.user;
-  const { path: tempUpload } = req.file;
-
-  try {
-    const image = await Jimp.read(tempUpload);
-    await image.cover(250, 250);
-    await image.writeAsync(tempUpload);
-  } catch (error) {
-    throw HttpError(500, "Internal Server Error");
-  }
-
-  const { url: avatarURL } = await cloudinary.uploader.upload(req.file.path, {
-    folder: "avatars",
-  });
-
-  await fs.unlink(req.file.path);
-
-  await User.findByIdAndUpdate(_id, { avatarURL });
-  res.json({
-    avatarURL,
-  });
-};
-
 const editProfile = async (req, res) => {
   const { id } = req.user;
   const { name, email, password } = req.body;
 
   const user = await User.findById(id);
+  let avatarURL = user.avatarURL;
+
   if (!user) {
     throw HttpError(404, "User not found");
   }
@@ -121,11 +99,28 @@ const editProfile = async (req, res) => {
     }
   }
 
+  try {
+    const tempUpload = req.file?.path;
+    if (tempUpload) {
+      const image = await Jimp.read(tempUpload);
+      await image.cover(250, 250);
+      await image.writeAsync(tempUpload);
+      ({ url: avatarURL } = await cloudinary.uploader.upload(tempUpload, {
+        folder: "avatars",
+      }));
+
+      await fs.unlink(tempUpload);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     id,
     {
       name,
       email,
+      avatarURL,
     },
     { new: true, runValidators: true }
   );
@@ -135,6 +130,7 @@ const editProfile = async (req, res) => {
     user: {
       name: updatedUser.name,
       email: updatedUser.email,
+      avatarURL,
     },
   });
 };
@@ -144,6 +140,5 @@ export default {
   login: ctrlWrapper(login),
   editTheme: ctrlWrapper(editTheme),
   logout: ctrlWrapper(logout),
-  changeAva: ctrlWrapper(changeAva),
   editProfile: ctrlWrapper(editProfile),
 };
