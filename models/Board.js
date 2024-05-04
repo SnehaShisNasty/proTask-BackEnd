@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { setUpdateSetting, handleSaveError } from "./hooks.js";
+import { backgroundList } from "../constants/board-constants.js";
 
 const boardsSchema = new Schema(
 	{
@@ -22,6 +23,7 @@ const boardsSchema = new Schema(
 		columns: [{ type: Schema.Types.ObjectId, ref: "column" }],
 	},
 	{ versionKey: false, timestamps: true }
+
 );
 
 boardsSchema.post("save", handleSaveError);
