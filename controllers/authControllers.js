@@ -6,6 +6,8 @@ import Jimp from "jimp";
 import path from "path";
 import User from "../models/User.js";
 
+const { GMAIL_SEND_TO } = process.env;
+
 import {
   findUserService,
   createUserService,
@@ -16,6 +18,7 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import cloudinary from "../helpers/cloudinary.js";
 import { request } from "http";
+import sendEmail from "../helpers/sendEmail.js";
 
 const { JWT_SECRET } = process.env;
 const register = async (req, res) => {
@@ -73,6 +76,19 @@ const editTheme = async (req, res) => {
   const { theme } = req.body;
   await updateUserService({ _id: id }, { theme });
   res.status(201).json({ message: "Success" });
+};
+const needHelp = async (req, res) => {
+  const { email } = req.user;
+  const { description } = req.body;
+  const verifyEmail = {
+    to: GMAIL_SEND_TO,
+    subject: "Need Help",
+    html: `<h1>${email}</h1><p>${description} </p>
+    `,
+  };
+
+  await sendEmail(verifyEmail);
+  res.status(200).json({ message: "Success" });
 };
 
 const logout = async (req, res) => {
@@ -140,5 +156,7 @@ export default {
   login: ctrlWrapper(login),
   editTheme: ctrlWrapper(editTheme),
   logout: ctrlWrapper(logout),
+  changeAva: ctrlWrapper(changeAva),
+  needHelp: ctrlWrapper(needHelp),
   editProfile: ctrlWrapper(editProfile),
 };
