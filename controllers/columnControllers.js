@@ -4,11 +4,12 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const createColumn = async (req, res) => {
-	const { _id: owner } = req.user;
+	// const { _id: owner } = req.user;
+	const { boardId } = req.params;
 
 	const result = await columnServices.createColumnService({
 		...req.body,
-		owner,
+		boardId,
 	});
 
 	res.status(201).json(result);
@@ -18,39 +19,35 @@ const editColumn = async (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		throw HttpError(400, "Body must have at least one field");
 	}
-
-	const { id } = req.params;
-	const { _id: owner } = req.user;
-	const result = await columnServices.editColumnService(
-		{ owner, _id: id },
-		req.body
-	);
+	// const { _id: owner } = req.user;
+	const { _id: columnId } = req.params;
+	const result = await columnServices.editColumnService({ columnId }, req.body);
 	if (!result) {
-		throw HttpError(404, `column with id = ${id} not found`);
+		throw HttpError(404, `column with id = ${columnId} not found`);
 	}
 
 	res.json(result);
 };
 
 const getAllСolumns = async (req, res) => {
-	const { _id: owner } = req.user;
-	const result = await columnServices.getAllColumnsService({ owner });
+	const { boardId } = req.params;
+	const result = await columnServices.getAllColumnsService({ boardId });
 
 	res.json({ columns: result });
 };
 
 const deleteColumn = async (req, res) => {
-	const { id } = req.params;
-	const { _id: owner } = req.user;
+	const { columnId } = req.params;
+	// const { _id: owner } = req.user;
 	const result = await columnServices.deleteColumnService({
-		owner,
-		_id: id,
+		// owner,
+		_id: columnId,
 	});
 	if (!result) {
-		throw HttpError(404, `column with id = ${id} not found`);
+		throw HttpError(404, `column with id = ${columnId} not found`);
 	}
 
-	res.status(203).json(`column with id = ${id} deleted sucssesfull`);
+	res.status(203).json(`column with id = ${columnId} deleted sucssesfull`);
 	// res.json(result)
 };
 
@@ -58,5 +55,5 @@ export default {
 	createColumn: ctrlWrapper(createColumn),
 	editcolumn: ctrlWrapper(editColumn),
 	getAllcolumns: ctrlWrapper(getAllСolumns),
-	deletecolumn: ctrlWrapper(deleteColumn),
+	deleteColumn: ctrlWrapper(deleteColumn),
 };

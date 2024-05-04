@@ -4,7 +4,7 @@ const createColumnService = (data) => Column.create(data);
 const editColumnService = (filter, data) =>
 	Column.findOneAndUpdate(filter, data, { new: true, runValidators: true });
 const getAllColumnsService = (filter = {}) =>
-	Column.find(filter, "-createAt -updateAt").populate("board", "_id");
+	Column.find(filter, "-createAt -updateAt");
 const deleteColumnService = (filter) => Column.findOneAndDelete(filter);
 
 export default {

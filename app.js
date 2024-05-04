@@ -18,7 +18,7 @@ app.use(express.static("public"));
 
 app.use("/users", authRouter);
 app.use("/boards", boardRouter);
-app.use("/boards/columns", columnRouter);
+app.use("/boards/current", columnRouter);
 
 app.use((_, res) => {
 	res.status(404).json({ message: "Route not found" });

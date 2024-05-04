@@ -16,6 +16,7 @@ const boardRouter = express.Router();
 boardRouter.use(authenticate);
 
 boardRouter.get("/", boardControllers.getAllBoards);
+boardRouter.get("/:id", boardControllers.getOneBoard);
 
 boardRouter.post(
 	"/create-board",
