@@ -4,6 +4,7 @@ import {
   userRegisterSchema,
   userLoginSchema,
   userEditThemeSchema,
+  userNeedHelpSchema,
 } from "../schemas/usersSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -32,6 +33,12 @@ authRouter.patch(
   upload.single("avatar"),
   authenticate,
   authControllers.changeAva
+);
+authRouter.post(
+  "/need-help",
+  authenticate,
+  validateBody(userNeedHelpSchema),
+  authControllers.needHelp
 );
 
 export default authRouter;

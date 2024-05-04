@@ -17,3 +17,6 @@ export const userLoginSchema = Joi.object({
 export const userEditThemeSchema = Joi.object({
   theme: Joi.string().valid("light", "dark", "violet").required(),
 });
+export const userNeedHelpSchema = Joi.object({
+  description: Joi.string().required(),
+});
