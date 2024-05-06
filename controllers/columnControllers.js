@@ -3,6 +3,8 @@ import columnServices from "../services/columnServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
+import Board from "../models/Board.js";
+
 const createColumn = async (req, res) => {
 	// const { _id: owner } = req.user;
 	const { boardId } = req.params;
@@ -11,6 +13,12 @@ const createColumn = async (req, res) => {
 		...req.body,
 		boardId,
 	});
+
+	const board = await Board.findById(boardId);
+
+	board.columns.push(result._id);
+	// Зберігаємо зміни дошки
+	await board.save();
 
 	res.status(201).json(result);
 };
@@ -29,12 +37,12 @@ const editColumn = async (req, res) => {
 	res.json(result);
 };
 
-const getAllСolumns = async (req, res) => {
-	const { boardId } = req.params;
-	const result = await columnServices.getAllColumnsService({ boardId });
+// const getAllСolumns = async (req, res) => {
+// 	const { boardId } = req.params;
+// 	const result = await columnServices.getAllColumnsService({ boardId });
 
-	res.json({ columns: result });
-};
+// 	res.json({ columns: result });
+// };
 
 const deleteColumn = async (req, res) => {
 	const { columnId } = req.params;
@@ -54,6 +62,6 @@ const deleteColumn = async (req, res) => {
 export default {
 	createColumn: ctrlWrapper(createColumn),
 	editcolumn: ctrlWrapper(editColumn),
-	getAllcolumns: ctrlWrapper(getAllСolumns),
+	// getAllcolumns: ctrlWrapper(getAllСolumns),
 	deleteColumn: ctrlWrapper(deleteColumn),
 };

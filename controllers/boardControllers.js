@@ -3,6 +3,8 @@ import boardServices from "../services/boardServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
+import Board from "../models/Board.js";
+
 const createBoard = async (req, res) => {
 	const { _id: owner } = req.user;
 
@@ -30,15 +32,26 @@ const editBoard = async (req, res) => {
 };
 
 const getOneBoard = async (req, res) => {
-	const { id: owner } = req.user;
+	// const { id: owner } = req.user;
+
 	const { id } = req.params;
-	const result = await boardServices.getBoardByFilter({ owner, _id: id });
+
+	// const result = await boardServices.getBoardByFilter(id);
+
+	//const result = await Board.findById(id).populate({
+	//	path: "columns",
+	//	select: "_id",
+	//});
+	const result = await Board.findById(id).populate(
+		"columns",
+		"title  updatedAt tasks"
+	);
+
 	if (!result) {
 		throw HttpError(404, `Board with id = ${id} not found`);
 	}
 	res.json(result);
 };
-
 const getAllBoards = async (req, res) => {
 	const { _id: owner } = req.user;
 	const result = await boardServices.getAllBoardsService({ owner });
