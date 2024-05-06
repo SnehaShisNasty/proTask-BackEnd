@@ -15,7 +15,7 @@ const columnRouter = express.Router();
 
 columnRouter.use(authenticate);
 
-columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
+// columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
 
 columnRouter.post(
 	"/:boardId",
