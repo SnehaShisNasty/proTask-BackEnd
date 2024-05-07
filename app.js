@@ -3,10 +3,12 @@ import morgan from "morgan";
 import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
-import authRouter from "./routes/authRouter.js";
 
+import authRouter from "./routes/authRouter.js";
 import boardRouter from "./routes/boardRouter.js";
 import columnRouter from "./routes/columnsRouter.js";
+import taskRouter from "./routes/tasksRouter.js";
+
 const { DB_HOST, PORT } = process.env;
 
 const app = express();
@@ -19,6 +21,7 @@ app.use(express.static("public"));
 app.use("/users", authRouter);
 app.use("/boards", boardRouter);
 app.use("/boards/current", columnRouter);
+app.use("/boards/current-column", taskRouter);
 
 app.use((_, res) => {
 	res.status(404).json({ message: "Route not found" });
