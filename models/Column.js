@@ -16,6 +16,7 @@ const columnSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "board",
 		},
+		tasks: [{ type: Schema.Types.ObjectId, ref: "task" }],
 	},
 	{ versionKey: false, timestamps: true }
 );
