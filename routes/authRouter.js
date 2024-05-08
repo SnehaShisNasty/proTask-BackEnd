@@ -26,7 +26,7 @@ authRouter.post(
   validateBody(userEditThemeSchema),
   authControllers.editTheme
 );
-
+authRouter.get("/current", authenticate, authControllers.current);
 authRouter.post("/logout", authenticate, authControllers.logout);
 
 authRouter.patch(
