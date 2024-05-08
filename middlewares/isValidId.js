@@ -16,5 +16,12 @@ export const isValidColumnId = (req, res, next) => {
 	}
 	next();
 };
+export const isValidTaskId = (req, res, next) => {
+	const { taskId } = req.params;
+	if (!isValidObjectId(taskId)) {
+		return next(HttpError(400, `${taskId} not valid id`));
+	}
+	next();
+};
 
 export default isValidId;

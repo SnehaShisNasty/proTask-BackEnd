@@ -7,7 +7,6 @@ import {
 	editColumnSchema,
 } from "../schemas/columnsSchemas.js";
 
-import isValidId from "../middlewares/isValidId.js";
 import { isValidColumnId } from "../middlewares/isValidId.js";
 import authenticate from "../middlewares/authenticate.js";
 
@@ -15,7 +14,7 @@ const columnRouter = express.Router();
 
 columnRouter.use(authenticate);
 
-columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
+// columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
 
 columnRouter.post(
 	"/:boardId",
