@@ -156,7 +156,6 @@ export default {
 	login: ctrlWrapper(login),
 	editTheme: ctrlWrapper(editTheme),
 	logout: ctrlWrapper(logout),
-	// changeAva: ctrlWrapper(changeAva),
 	needHelp: ctrlWrapper(needHelp),
 	editProfile: ctrlWrapper(editProfile),
 };

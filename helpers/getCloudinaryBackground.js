@@ -1,6 +1,16 @@
 import { v2 as cloudinary } from "cloudinary";
 
 const fetchFromCloudinary = async (tag) => {
+  if (tag === "icon") {
+    const result = await cloudinary.api.resources_by_tag(tag);
+    const backgroundIcons = result.resources.map((icon) => {
+      const iconName = icon.public_id.split("/").pop();
+      const iconUrl = icon.secure_url;
+      return { [iconName]: iconUrl };
+    });
+    return { images: backgroundIcons };
+  }
+
   if (tag === "none-background") {
     return {};
   }

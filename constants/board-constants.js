@@ -16,3 +16,14 @@ export const backgroundList = [
   "baloon-sky",
   "night-trailer",
 ];
+
+export const iconList = [
+  "dots",
+  "star",
+  "propeller",
+  "pazzle",
+  "cube",
+  "lightning",
+  "ice",
+  "hexagon",
+];

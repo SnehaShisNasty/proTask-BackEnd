@@ -51,6 +51,7 @@ const editBoard = async (req, res) => {
 };
 
 const getOneBoard = async (req, res) => {
+
 	// const { id: owner } = req.user;
 
 	const { id } = req.params;
@@ -88,6 +89,7 @@ const getOneBoard = async (req, res) => {
 	res.json(result);
 };
 const getAllBoards = async (req, res) => {
+
 	const { _id: owner } = req.user;
 	const result = await boardServices.getAllBoardsService({ owner });
 
@@ -110,9 +112,9 @@ const deleteBoard = async (req, res) => {
 };
 
 export default {
-	createBoard: ctrlWrapper(createBoard),
-	editBoard: ctrlWrapper(editBoard),
-	getOneBoard: ctrlWrapper(getOneBoard),
-	getAllBoards: ctrlWrapper(getAllBoards),
-	deleteBoard: ctrlWrapper(deleteBoard),
+  createBoard: ctrlWrapper(createBoard),
+  editBoard: ctrlWrapper(editBoard),
+  getOneBoard: ctrlWrapper(getOneBoard),
+  getAllBoards: ctrlWrapper(getAllBoards),
+  deleteBoard: ctrlWrapper(deleteBoard),
 };
