@@ -36,7 +36,7 @@ const editTask = async (req, res) => {
 };
 const deleteTask = async (req, res) => {
 	// ToDo реалізувати видалення з масиву в колекції колонок
-	const { taskId } = req.params;
+	const { taskId, columnId } = req.params;
 	// const { _id: owner } = req.user;
 	const result = await taskServices.deleteTaskService({
 		// owner,
@@ -45,6 +45,15 @@ const deleteTask = async (req, res) => {
 	if (!result) {
 		throw HttpError(404, `Task with id = ${taskId} not found`);
 	}
+
+	const { _id: id } = result;
+
+	const column = await Column.findById(columnId);
+	const deletedTask = column.tasks.findIndex(
+		(task) => task.toString() === id.toString()
+	);
+	column.tasks.splice(deletedTask, 1);
+	await column.save();
 
 	res.status(203).json(`Task with id = ${taskId} deleted sucssesfull`);
 	// res.json(result)
