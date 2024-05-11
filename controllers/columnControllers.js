@@ -6,6 +6,7 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 import Board from "../models/Board.js";
+import Column from "../models/Column.js";
 
 const createColumn = async (req, res) => {
 	// const { _id: owner } = req.user;
@@ -44,8 +45,12 @@ const editColumn = async (req, res) => {
 	res.json(result);
 };
 
+const switchColumn = async (req, res) => {
+	const { columnId } = req.params;
+	console.log(columnId);
+};
+
 const deleteColumn = async (req, res) => {
-	// ToDo реалізувати видалення з масиву в колекції бордів
 	const { columnId, boardId } = req.params;
 
 	const result = await columnServices.deleteColumnService({
@@ -68,17 +73,34 @@ const deleteColumn = async (req, res) => {
 	res.status(203).json(`column with id = ${columnId} deleted sucssesfull`);
 };
 
-// const getAllСolumns = async (req, res) => {
-// 	const { boardId } = req.params;
-// 	const result = await columnServices.getAllColumnsService({ boardId });
+const getAllСolumns = async (req, res) => {
+	const { boardId } = req.params;
+	const result = await columnServices.getAllColumnsService({ boardId });
 
-// 	res.json({ columns: result });
-// };
+	res.json({ columns: result });
+};
+
+const getOnecolumn = async (req, res) => {
+	const { columnId } = req.params;
+	const result = await Column.findById(columnId).populate({
+		path: "tasks",
+		select: {
+			_id: 1,
+			updatedAt: 1,
+			title: 1,
+			description: 1,
+			priority: 1,
+			deadline: 1,
+		},
+	});
+	res.json({ columns: result });
+};
 
 export default {
 	createColumn: ctrlWrapper(createColumn),
 	editcolumn: ctrlWrapper(editColumn),
+	switchColumn: ctrlWrapper(switchColumn),
 	deleteColumn: ctrlWrapper(deleteColumn),
-
-	// getAllcolumns: ctrlWrapper(getAllСolumns),
+	getAllcolumns: ctrlWrapper(getAllСolumns),
+	getOnecolumn: ctrlWrapper(getOnecolumn),
 };

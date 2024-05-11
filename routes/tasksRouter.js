@@ -15,7 +15,6 @@ taskRouter.use(authenticate);
 
 taskRouter.post(
 	"/:columnId",
-
 	validateBody(createTaskSchema),
 	taskControllers.createTask
 );
@@ -30,7 +29,6 @@ taskRouter.put(
 taskRouter.delete(
 	"/:columnId/:taskId",
 	isValidTaskId,
-
 	taskControllers.deleteTask
 );
 

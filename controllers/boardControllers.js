@@ -51,17 +51,8 @@ const editBoard = async (req, res) => {
 };
 
 const getOneBoard = async (req, res) => {
-
-	// const { id: owner } = req.user;
-
 	const { id } = req.params;
 
-	// const result = await boardServices.getBoardByFilter(id);
-
-	//const result = await Board.findById(id).populate({
-	//	path: "columns",
-	//	select: "_id",
-	//});
 	const result = await Board.findById(id).populate({
 		path: "columns",
 		select: {
@@ -89,7 +80,6 @@ const getOneBoard = async (req, res) => {
 	res.json(result);
 };
 const getAllBoards = async (req, res) => {
-
 	const { _id: owner } = req.user;
 	const result = await boardServices.getAllBoardsService({ owner });
 
@@ -112,9 +102,9 @@ const deleteBoard = async (req, res) => {
 };
 
 export default {
-  createBoard: ctrlWrapper(createBoard),
-  editBoard: ctrlWrapper(editBoard),
-  getOneBoard: ctrlWrapper(getOneBoard),
-  getAllBoards: ctrlWrapper(getAllBoards),
-  deleteBoard: ctrlWrapper(deleteBoard),
+	createBoard: ctrlWrapper(createBoard),
+	editBoard: ctrlWrapper(editBoard),
+	getOneBoard: ctrlWrapper(getOneBoard),
+	getAllBoards: ctrlWrapper(getAllBoards),
+	deleteBoard: ctrlWrapper(deleteBoard),
 };
