@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import columnServices from "../services/columnServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -42,6 +44,30 @@ const editColumn = async (req, res) => {
 	res.json(result);
 };
 
+const deleteColumn = async (req, res) => {
+	// ToDo реалізувати видалення з масиву в колекції бордів
+	const { columnId, boardId } = req.params;
+
+	const result = await columnServices.deleteColumnService({
+		_id: columnId,
+	});
+	if (!result) {
+		throw HttpError(404, `column with id = ${columnId} not found`);
+	}
+
+	const { _id: id } = result;
+
+	const board = await Board.findById(boardId);
+	const deletedColumn = board.columns.findIndex((column) => {
+		return column.toString() === id.toString();
+	});
+
+	board.columns.splice(deletedColumn, 1);
+	await board.save();
+
+	res.status(203).json(`column with id = ${columnId} deleted sucssesfull`);
+};
+
 // const getAllСolumns = async (req, res) => {
 // 	const { boardId } = req.params;
 // 	const result = await columnServices.getAllColumnsService({ boardId });
@@ -49,25 +75,10 @@ const editColumn = async (req, res) => {
 // 	res.json({ columns: result });
 // };
 
-const deleteColumn = async (req, res) => {
-	// ToDo реалізувати видалення з масиву в колекції бордів
-	const { columnId } = req.params;
-	// const { _id: owner } = req.user;
-	const result = await columnServices.deleteColumnService({
-		// owner,
-		_id: columnId,
-	});
-	if (!result) {
-		throw HttpError(404, `column with id = ${columnId} not found`);
-	}
-
-	res.status(203).json(`column with id = ${columnId} deleted sucssesfull`);
-	// res.json(result)
-};
-
 export default {
 	createColumn: ctrlWrapper(createColumn),
 	editcolumn: ctrlWrapper(editColumn),
-	// getAllcolumns: ctrlWrapper(getAllСolumns),
 	deleteColumn: ctrlWrapper(deleteColumn),
+
+	// getAllcolumns: ctrlWrapper(getAllСolumns),
 };
