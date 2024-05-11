@@ -3,13 +3,9 @@ import authControllers from "../controllers/authControllers.js";
 import {
   userRegisterSchema,
   userLoginSchema,
-  userEditThemeSchema,
-  userNeedHelpSchema,
-  userProfileEditSchema,
 } from "../schemas/usersSchemas.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
-import upload from "../middlewares/upload.js";
 
 const authRouter = express.Router();
 
@@ -19,28 +15,7 @@ authRouter.post(
   authControllers.register
 );
 authRouter.post("/login", validateBody(userLoginSchema), authControllers.login);
-
-authRouter.post(
-  "/edit/theme",
-  authenticate,
-  validateBody(userEditThemeSchema),
-  authControllers.editTheme
-);
 authRouter.get("/current", authenticate, authControllers.current);
 authRouter.post("/logout", authenticate, authControllers.logout);
-
-authRouter.patch(
-  "/profile",
-  authenticate,
-  upload.single("avatar"),
-  validateBody(userProfileEditSchema),
-  authControllers.editProfile
-);
-authRouter.post(
-  "/need-help",
-  authenticate,
-  validateBody(userNeedHelpSchema),
-  authControllers.needHelp
-);
 
 export default authRouter;
