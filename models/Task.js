@@ -11,7 +11,7 @@ const tasksSchema = new Schema(
 			type: String,
 			required: [true, "Description is required"],
 		},
-		color: {
+		priority: {
 			type: String,
 			required: [true, "Color is required"],
 		},
