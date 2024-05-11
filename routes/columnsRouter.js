@@ -14,7 +14,8 @@ const columnRouter = express.Router();
 
 columnRouter.use(authenticate);
 
-// columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
+columnRouter.get("/:boardId", columnsControllers.getAllcolumns);
+columnRouter.get("/:boardId/:columnId", columnsControllers.getOnecolumn);
 
 columnRouter.post(
 	"/:boardId",
@@ -27,6 +28,13 @@ columnRouter.put(
 	isValidColumnId,
 	validateBody(editColumnSchema),
 	columnsControllers.editcolumn
+);
+
+columnRouter.put(
+	"/switch-column/:columnId",
+	isValidColumnId,
+	validateBody(editColumnSchema),
+	columnsControllers.switchColumn
 );
 
 columnRouter.delete(
