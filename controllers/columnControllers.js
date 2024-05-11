@@ -52,15 +52,15 @@ const deleteColumn = async (req, res) => {
 		_id: columnId,
 	});
 	if (!result) {
-		throw HttpError(404, `column with id = ${columnId} not found`);
+		throw HttpError(404, `Column with id = ${columnId} not found`);
 	}
 
 	const { _id: id } = result;
 
 	const board = await Board.findById(boardId);
-	const deletedColumn = board.columns.findIndex((column) => {
-		return column.toString() === id.toString();
-	});
+	const deletedColumn = board.columns.findIndex(
+		(column) => column.toString() === id.toString()
+	);
 
 	board.columns.splice(deletedColumn, 1);
 	await board.save();
