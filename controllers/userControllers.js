@@ -64,9 +64,17 @@ const editProfile = async (req, res) => {
       const image = await Jimp.read(tempUpload);
       await image.cover(250, 250);
       await image.writeAsync(tempUpload);
-      ({ url: avatarURL } = await cloudinary.uploader.upload(tempUpload, {
+
+      const uploadOptions = {
+        public_id: id,
         folder: "avatars",
-      }));
+      };
+
+      const result = await cloudinary.uploader.upload(
+        tempUpload,
+        uploadOptions
+      );
+      avatarURL = result.url;
 
       await fs.unlink(tempUpload);
     }
