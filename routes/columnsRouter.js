@@ -5,6 +5,7 @@ import validateBody from "../decorators/validateBody.js";
 import {
 	createColumnSchema,
 	editColumnSchema,
+	switchColumnShema,
 } from "../schemas/columnsSchemas.js";
 
 import { isValidColumnId } from "../middlewares/isValidId.js";
@@ -31,9 +32,8 @@ columnRouter.put(
 );
 
 columnRouter.put(
-	"/switch-column/:columnId",
-	isValidColumnId,
-	validateBody(editColumnSchema),
+	"/:boardId",
+	validateBody(switchColumnShema),
 	columnsControllers.switchColumn
 );
 

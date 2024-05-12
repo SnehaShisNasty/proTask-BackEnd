@@ -7,6 +7,7 @@ import HttpError from "../helpers/HttpError.js";
 
 import Board from "../models/Board.js";
 import Column from "../models/Column.js";
+import Task from "../models/Task.js";
 
 const createColumn = async (req, res) => {
 	// const { _id: owner } = req.user;
@@ -46,8 +47,28 @@ const editColumn = async (req, res) => {
 };
 
 const switchColumn = async (req, res) => {
-	const { columnId } = req.params;
-	console.log(columnId);
+	const { taskId, newColumnId } = req.body;
+
+	const task = await Task.findById(taskId);
+	console.log("before", task);
+	const currentColumn = await Column.findOne({ tasks: taskId });
+
+	const newColumn = await Column.findById(newColumnId);
+	// Видаляємо таск із масиву tasks поточної колонки
+	currentColumn.tasks = currentColumn.tasks.filter(
+		(taskIdToRemove) => taskIdToRemove.toString() !== taskId.toString()
+	);
+	task.columnId = newColumnId;
+	await task.save();
+	console.log("after", task);
+	// Додаємо таск до масиву tasks нової колонки
+	newColumn.tasks.push(taskId);
+
+	// Зберігаємо зміни у обох колонках
+	await currentColumn.save();
+	await newColumn.save();
+
+	res.status(203).json(`The task has been successfully moved to a new column`);
 };
 
 const deleteColumn = async (req, res) => {
