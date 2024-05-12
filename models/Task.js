@@ -23,6 +23,10 @@ const tasksSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "column",
 		},
+		boardId: {
+			type: Schema.Types.ObjectId,
+			ref: "board",
+		},
 	},
 	{ versionKey: false, timestamps: true }
 );

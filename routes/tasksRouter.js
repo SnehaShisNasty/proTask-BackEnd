@@ -13,8 +13,10 @@ const taskRouter = express.Router();
 
 taskRouter.use(authenticate);
 
+taskRouter.get("/:boardId", taskControllers.getAllTasks);
+
 taskRouter.post(
-	"/:columnId",
+	"/:boardId/:columnId",
 	validateBody(createTaskSchema),
 	taskControllers.createTask
 );
