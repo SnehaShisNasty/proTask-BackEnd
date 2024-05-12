@@ -47,7 +47,7 @@ const editBoard = async (req, res) => {
     throw HttpError(404, `Board with id = ${id} not found`);
   }
 
-  res.json(result);
+  res.status(201).json(result);
 };
 
 const getOneBoard = async (req, res) => {
@@ -82,11 +82,11 @@ const getOneBoard = async (req, res) => {
 const getAllBoards = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await boardServices.getAllBoardsService({ owner });
-	if (!result) {
-		throw HttpError(404, `User with id = ${id} not found`);
-	}
+  if (!result) {
+    throw HttpError(404, `User with id = ${id} not found`);
+  }
 
-	res.json({ boards: result });
+  res.json({ boards: result });
 };
 
 const getBackgroundBoards = async (req, res) => {

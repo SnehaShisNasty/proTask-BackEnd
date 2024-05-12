@@ -11,10 +11,11 @@ servers:
 
 tags:
   - name: Authentication
-    description: "All methods about authentication"
+    description: "All methods of authentication"
   - name: User
-    description: "All methods about "
-
+    description: "All methods of user "
+  - name: Board
+    description: "All methods of board"
 paths:
   /auth/register:
     post:
@@ -192,6 +193,129 @@ paths:
           description: Authorization header not found
         "403":
           description: Forbidden
+
+  /boards:
+    get:
+      summary: Get all boards
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BoardShema"
+        "401":
+          description: Authorization header not found
+        "403":
+          description: Forbidden
+  /boards/background-icons:
+    get:
+      summary: Get all background-icons for board
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BackgroundIcons"
+        "401":
+          description: Authorization header not found
+        "403":
+          description: Forbidden
+  /boards/:id:
+    get:
+      summary: Get one board by id
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardShema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    put:
+      summary: Change one board by id
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateAndUpdateBoardSchema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    delete:
+      summary: delete one board by id
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "203":
+          description: Board with id deleted sucssesfull
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+  /boards/create-board:
+    post:
+      summary: Get all background-icons for board
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAndUpdateBoardSchema"
+
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardShema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+
 components:
   schemas:
     UserRegister:
@@ -243,6 +367,63 @@ components:
         password:
           type: string
           example: "Password1"
+    BoardShema:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        icon:
+          type: string
+        background:
+          type: string
+        owner:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+        columns:
+          type: array
+          items:
+            type: object
+    BackgroundIcons:
+      type: object
+      properties:
+        color:
+          type: string
+          example: "https://res.cloudinary.com/dqk2vytp0/image/upload/v1715520688/backgrounds/yacht.png"
+    CreateAndUpdateBoardSchema:
+      type: object
+      properties:
+        title:
+          type: string
+        icon:
+          type: string
+        background:
+          type: string
+          enum:
+            [
+              "none-background",
+              "magnolia",
+              "starry-sky",
+              "sakura",
+              "half-moon",
+              "palm-leaves",
+              "clouds",
+              "rocky-beach",
+              "violet-ball",
+              "full-moon",
+              "yacht",
+              "baloon",
+              "mountains",
+              "sea",
+              "baloon-sky",
+              "night-trailer",
+            ]
+
   securitySchemes:
     bearerAuth:
       type: http
