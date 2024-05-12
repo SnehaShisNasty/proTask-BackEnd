@@ -77,7 +77,7 @@ paths:
         "401":
           description: Email or password invalid
   /auth/current:
-    post:
+    get:
       summary: "Get current user's data"
       description: "Endpoint to get current user's data."
       tags:
