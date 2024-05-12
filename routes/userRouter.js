@@ -11,7 +11,7 @@ import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
-userRouter.post(
+userRouter.patch(
   "/edit/theme",
   authenticate,
   validateBody(userEditThemeSchema),

@@ -12,11 +12,11 @@ servers:
 tags:
   - name: Authentication
     description: "All methods about authentication"
-  - name: Edit
-    description: "All methods about Edit"
+  - name: User
+    description: "All methods about "
 
 paths:
-  /users/register:
+  /auth/register:
     post:
       summary: Creates a user
       tags:
@@ -34,7 +34,7 @@ paths:
           description: Bad request
         "409":
           description: Conflict. Email alreasy in use
-  /users/login:
+  /auth/login:
     post:
       summary: Login a user.
       tags:
@@ -65,12 +65,50 @@ paths:
                       email:
                         type: string
                         example: "Password1"
+                      avatar:
+                        type: string
+                        example: "//www.gravatar.com/avatar/f43bb93d61d8fb8d06fc2c16b847ce06?s=250"
+                      theme:
+                        type: string
+                        example: light
 
         "400":
           description: Bad request
         "401":
           description: Email or password invalid
-  /users/logout:
+  /auth/current:
+    post:
+      summary: "Get current user's data"
+      description: "Endpoint to get current user's data."
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "test@gmail.com"
+                      email:
+                        type: string
+                        example: "Password1"
+                      avatar:
+                        type: string
+                        example: "//www.gravatar.com/avatar/f43bb93d61d8fb8d06fc2c16b847ce06?s=250"
+        "401":
+          description: Authorization header not found
+        "403":
+          description: Forbidden
+  /auth/logout:
     post:
       summary: "Logout a user"
       description: "Endpoint to log out a user."
@@ -85,11 +123,12 @@ paths:
           description: Authorization header not found
         "403":
           description: Forbidden
+
   /users/edit/theme:
-    post:
+    patch:
       summary: Edit your personal theme
       tags:
-        - Edit
+        - User
       security:
         - bearerAuth: []
       requestBody:
@@ -100,7 +139,53 @@ paths:
               $ref: "#/components/schemas/UserTheme"
       responses:
         "201":
-          description: Created
+          description: Changed
+        "400":
+          description: Invalid data
+        "401":
+          description: Authorization header not found
+        "403":
+          description: Forbidden
+  /users/need-help:
+    patch:
+      summary: Edit your personal theme
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserNeedHelp"
+      responses:
+        "201":
+          description: Success
+        "400":
+          description: Invalid data
+        "401":
+          description: Authorization header not found
+        "403":
+          description: Forbidden
+  /users/edit/profile:
+    patch:
+      summary: Edit your personal data
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/EditProfileShema"
+              profileImage:
+                type: string
+      responses:
+        "201":
+          description: Success
         "400":
           description: Invalid data
         "401":
@@ -139,7 +224,25 @@ components:
           type: string
           enum: ["light", "dark", "violet"]
           example: "light"
-
+    UserNeedHelp:
+      type: object
+      properties:
+        description:
+          type: string
+          example: "User comment"
+    EditProfileShema:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "name"
+        email:
+          type: string
+          format: email
+          example: "test@gmail.com"
+        password:
+          type: string
+          example: "Password1"
   securitySchemes:
     bearerAuth:
       type: http
