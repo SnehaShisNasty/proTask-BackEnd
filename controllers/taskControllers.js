@@ -7,11 +7,12 @@ import HttpError from "../helpers/HttpError.js";
 import Column from "../models/Column.js";
 
 const createTask = async (req, res) => {
-	const { columnId } = req.params;
+	const { columnId, boardId } = req.params;
 
 	const result = await taskServices.createTaskService({
 		...req.body,
 		columnId,
+		boardId,
 	});
 
 	const column = await Column.findById(columnId);
@@ -34,9 +35,22 @@ const editTask = async (req, res) => {
 
 	res.json(result);
 };
+
+const getAllTasks = async (req, res) => {
+	const { boardId } = req.params;
+	const result = await taskServices.getAllTasksService({ boardId });
+
+	if (!result) {
+		throw HttpError(404, `Task with id = ${id} not found`);
+	}
+
+	res.json({ tasks: result });
+};
+
 const deleteTask = async (req, res) => {
-	// ToDo реалізувати видалення з масиву в колекції колонок
+
 	const { taskId, columnId } = req.params;
+
 	// const { _id: owner } = req.user;
 	const result = await taskServices.deleteTaskService({
 		// owner,
@@ -62,5 +76,6 @@ const deleteTask = async (req, res) => {
 export default {
 	createTask: ctrlWrapper(createTask),
 	editTask: ctrlWrapper(editTask),
+	getAllTasks: ctrlWrapper(getAllTasks),
 	deleteTask: ctrlWrapper(deleteTask),
 };

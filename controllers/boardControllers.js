@@ -82,8 +82,11 @@ const getOneBoard = async (req, res) => {
 const getAllBoards = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await boardServices.getAllBoardsService({ owner });
+	if (!result) {
+		throw HttpError(404, `User with id = ${id} not found`);
+	}
 
-  res.json({ boards: result });
+	res.json({ boards: result });
 };
 
 const getBackgroundBoards = async (req, res) => {
