@@ -28,7 +28,7 @@ const tasksSchema = new Schema(
 			ref: "board",
 		},
 	},
-	{ versionKey: false, timestamps: true }
+	{ versionKey: false, timestamps: false }
 );
 
 tasksSchema.post("save", handleSaveError);
