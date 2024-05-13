@@ -16,6 +16,8 @@ tags:
     description: "All methods of user "
   - name: Board
     description: "All methods of board"
+  - name: Task
+    description: "All methods of task"
 paths:
   /auth/register:
     post:
@@ -315,7 +317,26 @@ paths:
           description: User with id not found
         "403":
           description: Forbidden
-
+  /boards/current-column/:boardId:
+    get:
+      summary: Get all tasks by id board
+      tags:
+        - Board
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskSchema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
 components:
   schemas:
     UserRegister:
@@ -423,7 +444,19 @@ components:
               "baloon-sky",
               "night-trailer",
             ]
-
+    TaskSchema:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        color:
+          type: string
+        deadline:
+          type: string
+        columnId:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

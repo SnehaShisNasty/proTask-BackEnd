@@ -24,12 +24,12 @@ const needHelp = async (req, res) => {
   const { email } = req.user;
   const { description } = req.body;
   const mailToUser = {
-    to: GMAIL_SEND_TO,
+    to: email,
     subject: "Task Pro",
     html: `${mailFile}`,
   };
   const mailToUs = {
-    to: email,
+    to: GMAIL_SEND_TO,
     subject: "Need Help",
     html: `<h1>${email}</h1>
     <p>${description}</p>`,
