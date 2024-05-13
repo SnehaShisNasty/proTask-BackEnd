@@ -3,7 +3,9 @@ import { v2 as cloudinary } from "cloudinary";
 const fetchFromCloudinary = async (tag) => {
   if (tag === "icon") {
     try {
-      const result = await cloudinary.api.resources_by_tag(tag);
+      const result = await cloudinary.api.resources_by_tag(tag, {
+        max_results: 500,
+      });
       const backgroundIcons = result.resources.map((icon) => {
         const iconName = icon.public_id.split("/").pop();
         const iconUrl = icon.secure_url;
