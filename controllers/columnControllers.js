@@ -50,7 +50,7 @@ const switchColumn = async (req, res) => {
 	const { taskId, newColumnId } = req.body;
 
 	const task = await Task.findById(taskId);
-	console.log("before", task);
+
 	const currentColumn = await Column.findOne({ tasks: taskId });
 
 	const newColumn = await Column.findById(newColumnId);
@@ -60,7 +60,6 @@ const switchColumn = async (req, res) => {
 	);
 	task.columnId = newColumnId;
 	await task.save();
-	console.log("after", task);
 	// Додаємо таск до масиву tasks нової колонки
 	newColumn.tasks.push(taskId);
 
@@ -107,7 +106,7 @@ const getOnecolumn = async (req, res) => {
 		path: "tasks",
 		select: {
 			_id: 1,
-			updatedAt: 1,
+			// updatedAt: 1,
 			title: 1,
 			description: 1,
 			priority: 1,

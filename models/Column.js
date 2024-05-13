@@ -18,7 +18,7 @@ const columnSchema = new Schema(
 		},
 		tasks: [{ type: Schema.Types.ObjectId, ref: "task" }],
 	},
-	{ versionKey: false, timestamps: true }
+	{ versionKey: false, timestamps: false }
 );
 
 columnSchema.post("save", handleSaveError);
