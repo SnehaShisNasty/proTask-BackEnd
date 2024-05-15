@@ -97,7 +97,7 @@ const editProfile = async (req, res) => {
     user: {
       name: updatedUser.name,
       email: updatedUser.email,
-      avatarURL,
+      avatarURL: updatedUser.avatarURL,
     },
   });
 };
