@@ -3,6 +3,8 @@ info:
   version: "1.0.0"
   title: "Task Pro Doc API"
   description: "API for managing tasks and todo lists"
+  contact:
+    url: https://github.com/SnehaShisNasty
 servers:
   - url: https://protask-backend-qjoh.onrender.com
     description: Production server
@@ -18,6 +20,8 @@ tags:
     description: "All methods of board"
   - name: Task
     description: "All methods of task"
+  - name: Colum
+    description: "All methods of colum"
 paths:
   /auth/register:
     post:
@@ -183,9 +187,21 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/EditProfileShema"
-              profileImage:
-                type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "name"
+                email:
+                  type: string
+                  format: email
+                  example: "test@gmail.com"
+                password:
+                  type: string
+                  example: "Password1"
+                profileImage:
+                  type: string
+                  format: binary
       responses:
         "201":
           description: Success
@@ -317,11 +333,12 @@ paths:
           description: User with id not found
         "403":
           description: Forbidden
+
   /boards/current-column/:boardId:
     get:
       summary: Get all tasks by id board
       tags:
-        - Board
+        - Task
       security:
         - bearerAuth: []
       responses:
@@ -337,6 +354,200 @@ paths:
           description: User with id not found
         "403":
           description: Forbidden
+  /boards/current-column/:boardId/:columnId:
+    post:
+      summary: Create task by id board
+      tags:
+        - Task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskSchema"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskSchema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+  /boards/current-column/:columnId/:taskId:
+    put:
+      summary: Update task by id board
+      tags:
+        - Task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskSchema"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskSchema"
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    delete:
+      summary: Delete task by id board
+      tags:
+        - Task
+      security:
+        - bearerAuth: []
+      responses:
+        "203":
+          description: Task with id  deleted sucssesfull
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+
+  /boards/current/:boardId:
+    get:
+      summary: Get all collums by id board
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ColumnSchema"
+
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    post:
+      summary: Create one collum
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ColumCreateAndUpdateSchema"
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    put:
+      summary: Switch all colum by id board
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SwitchColumnShema"
+      responses:
+        "203":
+          description: The task has been successfully moved to a new column
+
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+  /boards/current/:boardId/:columnId:
+    get:
+      summary: Get all collum by id board
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ColumnSchema"
+
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    put:
+      summary: Update collum by id collum
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ColumCreateAndUpdateSchema"
+      responses:
+        "201":
+          description: Success
+
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+    delete:
+      summary: Delete collum by id collum
+      tags:
+        - Colum
+      security:
+        - bearerAuth: []
+      responses:
+        "203":
+          description: column with id  deleted sucssesfull
+
+        "401":
+          description: Authorization header not found
+        "404":
+          description: User with id not found
+        "403":
+          description: Forbidden
+
 components:
   schemas:
     UserRegister:
@@ -455,7 +666,34 @@ components:
           type: string
         deadline:
           type: string
-        columnId:
+        priority:
+          type: string
+    ColumnSchema:
+      type: object
+      properties:
+        boardId:
+          type: string
+        title:
+          type: string
+        _id:
+          type: string
+        tasks:
+          type: array
+          items:
+            type: object
+        priority:
+          type: string
+    ColumCreateAndUpdateSchema:
+      type: object
+      properties:
+        title:
+          type: string
+    SwitchColumnShema:
+      type: object
+      properties:
+        taskId:
+          type: string
+        newColumnId:
           type: string
   securitySchemes:
     bearerAuth:
