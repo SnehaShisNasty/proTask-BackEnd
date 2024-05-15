@@ -42,10 +42,10 @@ const needHelp = async (req, res) => {
 
 const editProfile = async (req, res) => {
   const { id } = req.user;
-  const { name, email, password } = req.body;
+  const { name, email, password, avatarURL } = req.body;
 
   const user = await User.findById(id);
-  let avatarURL = user.avatarURL;
+  // let avatarURL = user.avatarURL;
 
   if (!user) {
     throw HttpError(404, "User not found");
