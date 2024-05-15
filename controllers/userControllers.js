@@ -53,9 +53,9 @@ const editProfile = async (req, res) => {
 
   if (password) {
     const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare) {
-      throw HttpError(401, "Incorrect current password");
-    }
+    // if (passwordCompare) {
+    //   throw HttpError(401, "Incorrect current password");
+    // }
   }
 
   try {
