@@ -7,6 +7,7 @@ import {
   createUserService,
   updateUserService,
 } from "../services/authServices.js";
+import { comparePassword } from "../helpers/comparePassword.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
@@ -21,7 +22,7 @@ const register = async (req, res) => {
   }
   const img = gravatar.url(email, { s: "250" });
 
-  const hashpasword = await bcrypt.hash(password, 10);
+  const hashpasword = await bcrypt.hash(password, 1);
 
   const newUser = await createUserService({
     ...req.body,
@@ -44,7 +45,7 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password invalid");
   }
 
-  const passwordCompare = await bcrypt.compare(password, user.password);
+  const passwordCompare = comparePassword(password, user.password);
   if (!passwordCompare) {
     throw HttpError(401, "Email or password invalid");
   }
@@ -58,7 +59,7 @@ const login = async (req, res) => {
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_TOKEN, {
     expiresIn: "7d",
   });
-  await updateUserService({ _id: id }, { token });
+  await updateUserService({ _id: id }, { accessToken, refreshToken });
   res.status(200).json({
     accessToken,
     refreshToken,

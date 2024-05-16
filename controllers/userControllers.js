@@ -6,7 +6,7 @@ import User from "../models/User.js";
 const { GMAIL_SEND_TO } = process.env;
 
 import { updateUserService } from "../services/authServices.js";
-
+import { comparePassword } from "../helpers/comparePassword.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import cloudinary from "../helpers/cloudinary.js";
@@ -42,19 +42,12 @@ const needHelp = async (req, res) => {
 const editProfile = async (req, res) => {
   const { id } = req.user;
   const { name, email, password } = req.body;
-
   const user = await User.findById(id);
   let avatarURL = user.avatarURL;
 
-  if (!user) {
-    throw HttpError(404, "User not found");
-  }
-
-  if (password) {
-    const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare) {
-      throw HttpError(401, "Incorrect current password");
-    }
+  const passwordCompare = comparePassword(password, user.password);
+  if (!passwordCompare) {
+    throw HttpError(401, "Incorrect current password");
   }
 
   try {
