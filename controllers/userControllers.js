@@ -21,8 +21,7 @@ const editTheme = async (req, res) => {
 };
 
 const needHelp = async (req, res) => {
-  const { email } = req.user;
-  const { description } = req.body;
+  const { description, email } = req.body;
   const mailToUser = {
     to: email,
     subject: "Task Pro",
@@ -53,9 +52,9 @@ const editProfile = async (req, res) => {
 
   if (password) {
     const passwordCompare = await bcrypt.compare(password, user.password);
-    // if (passwordCompare) {
-    //   throw HttpError(401, "Incorrect current password");
-    // }
+    if (!passwordCompare) {
+      throw HttpError(401, "Incorrect current password");
+    }
   }
 
   try {

@@ -21,7 +21,11 @@ const userSchema = new Schema(
       default: "light",
       enum: ["light", "dark", "violet"],
     },
-    token: {
+    accessToken: {
+      type: String,
+      default: null,
+    },
+    refreshToken: {
       type: String,
       default: null,
     },

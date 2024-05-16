@@ -11,7 +11,7 @@ import {
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
-const { JWT_SECRET } = process.env;
+const { ACCESS_SECRET_TOKEN, REFRESH_SECRET_TOKEN } = process.env;
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await findUserService({ email });
@@ -52,10 +52,16 @@ const login = async (req, res) => {
   const payload = {
     id,
   };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_TOKEN, {
+    expiresIn: "5m",
+  });
+  const refreshToken = jwt.sign(payload, REFRESH_SECRET_TOKEN, {
+    expiresIn: "7d",
+  });
   await updateUserService({ _id: id }, { token });
   res.status(200).json({
-    token,
+    accessToken,
+    refreshToken,
     user: {
       name,
       email,
@@ -68,6 +74,31 @@ const current = async (req, res) => {
   const { name, email, avatarURL, theme } = req.user;
   res.status(200).json({ message: { name, email, avatarURL, theme } });
 };
+const refresh = async (req, res) => {
+  const { refreshToken: token } = req.body;
+  try {
+    const { id } = jwt.verify(token, REFRESH_SECRET_TOKEN);
+    const isExist = await findUserService({ refreshToken: token });
+    if (!isExist) {
+      throw HttpError(401, "Token invalid");
+    }
+    const payload = {
+      id,
+    };
+    const accessToken = jwt.sign(payload, ACCESS_SECRET_TOKEN, {
+      expiresIn: "5m",
+    });
+    const refreshToken = jwt.sign(payload, REFRESH_SECRET_TOKEN, {
+      expiresIn: "7d",
+    });
+    res.status(200).json({
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    throw HttpError(403, error.message);
+  }
+};
 
 const logout = async (req, res) => {
   const { _id } = req.user;
@@ -78,6 +109,7 @@ const logout = async (req, res) => {
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  refresh: ctrlWrapper(refresh),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
 };
