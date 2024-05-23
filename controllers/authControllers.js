@@ -54,11 +54,12 @@ const login = async (req, res) => {
     id,
   };
   const accessToken = jwt.sign(payload, ACCESS_SECRET_TOKEN, {
-    expiresIn: "5m",
+    expiresIn: "30s",
   });
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_TOKEN, {
     expiresIn: "7d",
   });
+  console.log(accessToken);
   await updateUserService({ _id: id }, { accessToken, refreshToken });
   res.status(200).json({
     accessToken,
@@ -80,6 +81,7 @@ const refresh = async (req, res) => {
   try {
     const { id } = jwt.verify(token, REFRESH_SECRET_TOKEN);
     const isExist = await findUserService({ refreshToken: token });
+    console.log(token);
     if (!isExist) {
       throw HttpError(401, "Token invalid");
     }
@@ -87,11 +89,12 @@ const refresh = async (req, res) => {
       id,
     };
     const accessToken = jwt.sign(payload, ACCESS_SECRET_TOKEN, {
-      expiresIn: "5m",
+      expiresIn: "30s",
     });
     const refreshToken = jwt.sign(payload, REFRESH_SECRET_TOKEN, {
       expiresIn: "7d",
     });
+    await updateUserService({ _id: id }, { accessToken, refreshToken });
     res.status(200).json({
       accessToken,
       refreshToken,
