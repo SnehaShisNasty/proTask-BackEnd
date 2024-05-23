@@ -40,7 +40,8 @@ const needHelp = async (req, res) => {
 };
 
 const editProfile = async (req, res) => {
-  const { id } = req.user;
+  const { id, name: prevName, email: prevEmail } = req.user;
+
   const { name, email, password } = req.body;
   const user = await User.findById(id);
   let avatarURL = user.avatarURL;
@@ -73,12 +74,13 @@ const editProfile = async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-
+  const updatedName = name || prevName;
+  const updatedEmail = email || prevEmail;
   const updatedUser = await User.findByIdAndUpdate(
     id,
     {
-      name,
-      email,
+      updatedName,
+      updatedEmail,
       avatarURL,
     },
     { new: true, runValidators: true }
@@ -87,8 +89,8 @@ const editProfile = async (req, res) => {
   res.status(200).json({
     message: "Profile updated successfully",
     user: {
-      name: updatedUser.name,
-      email: updatedUser.email,
+      name: updatedName,
+      email: updatedEmail,
       avatarURL: updatedUser.avatarURL,
     },
   });
